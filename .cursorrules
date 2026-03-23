@@ -1,0 +1,79 @@
+# voicenote-pro — Cursor Rules
+# Stack: React + Vite + Node.js + Anthropic Claude API + TypeScript
+
+## Project Context
+AI-powered voice note application. Frontend records audio, sends to Node.js backend,
+which transcribes and processes with Claude API. Port: 5174.
+
+## Code Quality
+- TypeScript strict mode — no `any`, use proper types
+- ESLint + Prettier enforced — zero warnings tolerated
+- Component CC ≤ 10
+- No hardcoded strings — constants in `src/constants/`
+- ANTHROPIC_API_KEY lives ONLY in backend `.env` — never in frontend code
+- Max file length: 300 lines
+
+## Component Rules
+- ONE component per file
+- Props interface defined above component
+- Custom hooks for all business logic:
+  - `useAudioRecorder()` — MediaRecorder API abstraction
+  - `useTranscription()` — polling/streaming transcription state
+  - `useNotesList()` — CRUD for notes
+- Memoize with useMemo/useCallback for lists/callbacks
+
+## Audio Recording Rules
+- Use `MediaRecorder` API — request mic permission gracefully
+- Handle `NotAllowedError`, `NotFoundError` with user-friendly messages
+- Record in `audio/webm` or `audio/ogg` format (browser-native)
+- Chunk size: 1 second blobs for streaming upload
+- Display real-time waveform visualization (AnalyserNode)
+- Always stop tracks on component unmount
+
+## Node.js Backend Rules
+- Route handlers thin — delegate to service layer
+- `ANTHROPIC_API_KEY` only from `process.env` — never hardcoded
+- Validate file uploads: max 25MB, audio MIME types only
+- Stream Claude API responses to frontend via Server-Sent Events
+- Multer for multipart file handling — store in temp, delete after processing
+- Error responses: `{ success: false, error: string, code: string }`
+
+## File Structure
+```
+src/
+  components/
+    AudioRecorder/    # Recording UI
+    NotesList/        # Notes display
+    TranscriptView/   # Text display
+  hooks/
+    useAudioRecorder.ts
+    useTranscription.ts
+    useNotesList.ts
+  services/
+    api.ts            # Backend API calls
+  constants/
+  types/
+backend/
+  routes/
+  services/
+    anthropicService.ts   # Claude API integration
+    audioService.ts       # Audio processing
+  middleware/
+```
+
+## Testing (target ≥ 85% coverage)
+- Mock `MediaRecorder` and `getUserMedia` in tests
+- Mock Anthropic SDK — never make real API calls in tests
+- Test error states: mic denied, upload failed, API error
+- Vitest + React Testing Library for frontend
+- Jest + supertest for backend
+
+## Security
+- Validate audio file MIME type server-side (not just extension)
+- Rate limit transcription endpoint (max 10 req/min per IP)
+- Sanitize transcribed text before storing
+- No API keys in client bundle — use proxy through backend
+
+## Git
+- Conventional commits: `feat/fix/chore/docs/test/refactor`
+- Never commit: `.env`, `node_modules/`, `dist/`, `uploads/`, `*.local`

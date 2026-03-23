@@ -1,0 +1,16 @@
+node_modules
+.next
+dist
+build
+.env
+.env.local
+.env.*.local
+coverage
+.nyc_output
+*.log
+.git
+.github
+__pycache__
+*.pyc
+venv
+.venv

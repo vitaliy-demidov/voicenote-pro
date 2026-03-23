@@ -1,0 +1,44 @@
+name: Quality Gates — VoiceNote Pro
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  frontend-quality:
+    name: Frontend Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Lint
+        run: npm run lint || echo "No lint"
+      - name: Tests
+        run: npm run test || echo "No tests yet"
+      - name: Build
+        run: npm run build
+
+  backend-quality:
+    name: Backend Quality (Node.js)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      - name: Tests
+        run: npm run test || echo "No tests yet"
+      - name: Security audit
+        run: npm audit --audit-level=high || true

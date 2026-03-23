@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --tg-theme-bg-color: #0f0f1a;
+    --tg-theme-secondary-bg-color: #13132b;
+    --tg-theme-text-color: #ffffff;
+    --tg-theme-hint-color: #6b7280;
+    --tg-theme-link-color: #6366f1;
+    --tg-theme-button-color: #6366f1;
+    --tg-theme-button-text-color: #ffffff;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html, body, #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background-color: var(--tg-theme-bg-color, #0f0f1a);
+    color: var(--tg-theme-text-color, #ffffff);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overscroll-behavior: none;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
